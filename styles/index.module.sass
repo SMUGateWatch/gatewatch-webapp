@@ -1,0 +1,73 @@
+//-- General Layout --------------------
+.main
+    width: 100%
+    height: 100vh
+    display: grid   
+    grid-template-columns: 148px auto 148px
+    grid-auto-rows: 60px auto 60px
+    position: fixed
+.nav
+    grid-column-start: 1
+    grid-column-end: 2
+    grid-row-start: 1
+    grid-row-end: 4 
+    
+.content
+    grid-column-start: 2
+    grid-column-end: 4
+    grid-row-start: 1
+    grid-row-end: 4
+    
+
+//-- Navigation Layout ---------------
+.sidebar
+    position: sticky
+    display: flex
+    width: inherit
+    height: 100%
+    flex-direction: column
+    align-items: center
+    justify-content: center
+    ul
+        list-style: none
+        padding: 0px
+        margin: 0px  
+    li
+        padding-top: 8px
+        padding-bottom: 8px 
+
+//-- 2 Container Grid Layout -------------------
+//-- Content Containers -------------------------
+%content-head
+    height: 30%
+    
+%content-container
+    height: 100%
+    
+%sub-content
+    width: 50%
+    height: 100%
+    background-color:#FFFFFF
+    display: inline-block
+
+.ContentHead
+    @extend %content-head
+.ContentContainer
+    @extend %content-container
+.SubContent
+    @extend %sub-content
+
+//-- One Layer Center Layout ---------------------
+
+.MainContainer
+    display: flex
+    height: 100vh
+    margin: 0px auto
+    align-items: center
+    justify-content: center
+.LoginContainer
+   width: 360px
+   height: 450px
+   background-color: #8eb8e0
+   border-radius: 8px
+
