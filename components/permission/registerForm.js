@@ -29,38 +29,37 @@ export default function RegisterForm() {
     password: '',
   })
   var [formRole,setFormRole]= useState({
-    enabled:true,
+    disabled:false,
     value:"",
   })
   var [customPermissions, setCustomPermissions]= useState({
-    enabled: false,
+    disabled: true,
     permissions:[]
   })
-  var [enableCustomRole, setCustomRoleDisable] = useState(false)
-  
   
   const handleCustomRoleEnabler = (e) => {
     if(e.currentTarget.checked) {
       setCustomPermissions({
-      enabled: true,
+      disabled: false,
       permissions:[]
       }) 
       setFormRole({
-        enabled:false
+        disabled:true
       })
     } 
     if(!e.currentTarget.checked) {
       setCustomPermissions ({
-        enabled:false
+        disabled:true
       })
       setFormRole({
-        enabled:true
+        disabled:false
       })
     }
   };
   const handleFormRoleSelection =(e)=> {
+    let selectedValue = e.currentTarget.value
     setFormRole({
-      value: e.currentTarget.value
+      value: selectedValue
     })
   }
   const handlePasswordInput=(inputPassword)=>{  
@@ -73,7 +72,6 @@ export default function RegisterForm() {
       style: textStyle
     })
   }
-
   const handleAddPermission=(e)=>{
     let permission = e.currentTarget.value
     setCustomRole({
@@ -116,6 +114,7 @@ export default function RegisterForm() {
             <Form.Group controlId="FormUserRole">
               <Form.Label>User Role</Form.Label>
               <Form.Control
+                disabled={formRole.disabled}
                 as="select"
                 defaultValue="Choose Role..."
                 onChange={e=>handleFormRoleSelection(e)}
@@ -128,28 +127,27 @@ export default function RegisterForm() {
             <Form.Group>
               <Form.Text className="lead my-1">Custom Role</Form.Text>
               <Form.Check
-                disable={enableCustomRole}
                 className="my-3"
                 type="checkbox"
                 label="Enable Custom Roles"
                 onChange={(e) => handleCustomRoleEnabler(e)}
               />
               <Form.Check
-                disabled={customPermissions.enabled}
+                disabled={customPermissions.disabled}
                 type="checkbox"
                 label="Access Monitoring Activity"
                 value="monitoring-access"
                 onChange={e=> handleAddPermission(e)}
               />
               <Form.Check
-                disabled={customPermissions.enabled}
+                disabled={customPermissions.disabled}
                 type="checkbox"
                 label="Access Vehicle Registry"
                 value="vehicle-access"
                 onChange={e=> handleAddPermission(e)}
               />
               <Form.Check
-                disabled={customPermissions.enabled}
+                disabled={customPermissions.disabled}
                 type="checkbox"
                 label="Access Data Registry"
                 value="data-access"
