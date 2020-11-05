@@ -4,8 +4,25 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Button from 'react-bootstrap/Button'
 import InputGroup from 'react-bootstrap/InputGroup'
+import useSWR from 'swr'
+
+const searchFetcher = async (url) => {
+  const res = await fetch(url)
+  const data = await res.json()
+
+  if (res.status !== 200) {
+    throw new Error(data.message)
+  }
+  return data
+}
+
 export default function StudentForm(){
         var [editable, setEditable] = useState(false)
+        var [searchValue, setSearchValue] = useState()
+        const handleSearch =()=> {
+          const {data, error} = useSWR(`/api/vehicles/${searchValue}`,searchFetcher)
+          
+        }
         return(
             <React.Fragment>
                 <Col>
@@ -14,6 +31,7 @@ export default function StudentForm(){
                           placeholder="Search Driver, Vehicle, School ID..."
                           aria-label="Recipient's username"
                           aria-describedby="basic-addon2"
+                          onChange={(e)=> setSearchValue(e.currentTarget.value)}
                         />
                         <InputGroup.Append>
                           <Button variant="outline-secondary">Search</Button>
