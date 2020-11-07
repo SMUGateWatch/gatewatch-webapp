@@ -51,7 +51,7 @@ export default function StudentForm(){
                           value ={searchValue}
                         />
                         <InputGroup.Append>
-                          <Button variant="outline-secondary">Search</Button>
+                          <Button variant="outline-secondary" onClick={()=>handleSearch()}>Search</Button>
                         </InputGroup.Append>
                     </InputGroup>
                     <Form>
@@ -130,6 +130,8 @@ export default function StudentForm(){
                             <Button className="mx-1" variant="primary" onClick={()=>setEditable(!editable)}><strong>EDIT</strong></Button>
                             <Button className="mx-1" variant="primary" disabled={editable}><strong>SAVE</strong></Button>
                             <Button className="mx-1" variant="primary" disabled={editable}><strong>DELETE</strong></Button>
+                            <Form.Control type="text" readonly placeholder="Enter License Number" value={isLoading}/>
+                            <Form.Control type="text" readonly placeholder="Enter License Number" value={errorMsg}/>
                        </Form.Row>
                    </Form> 
                 </Col>
