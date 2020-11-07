@@ -19,9 +19,25 @@ const searchFetcher = async (url) => {
 export default function StudentForm(){
         var [editable, setEditable] = useState(false)
         var [searchValue, setSearchValue] = useState()
+        var [isLoading,setIsLoading] = useState(false)
+        var [errorMsg, setErrorMsg] = useState({
+          message:"",
+          hidden: true,
+        })
+        var [dataForm, setDataForm] = useState({
+          FullName:"",
+          Id: "",
+          classType: "",
+          email: "",
+          vehicleName : "",
+          plateNumber : "",
+          licenseNumber: "",
+        })
         const handleSearch =()=> {
           const {data, error} = useSWR(`/api/vehicles/${searchValue}`,searchFetcher)
           
+          data ? setDataForm({...data}) : setIsLoading(true) 
+          if (error) setErrorMsg({message: error.message})
         }
         return(
             <React.Fragment>
@@ -32,6 +48,7 @@ export default function StudentForm(){
                           aria-label="Recipient's username"
                           aria-describedby="basic-addon2"
                           onChange={(e)=> setSearchValue(e.currentTarget.value)}
+                          value ={searchValue}
                         />
                         <InputGroup.Append>
                           <Button variant="outline-secondary">Search</Button>
