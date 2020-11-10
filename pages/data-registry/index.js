@@ -18,6 +18,7 @@ const fetcher=(url)=> fetch(url).then(res=>res.json())
 export default function DataRegistry() {
   const router = useRouter()
   const {data: trafficData, error} = useSWR(`/api/registry`,fetcher)
+  if (!trafficData) return <h1>Loading...</h1>
   return (
     <Layout fluid>
       <Row>
