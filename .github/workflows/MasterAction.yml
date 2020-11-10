@@ -43,5 +43,7 @@ jobs:
         uses: treosh/lighthouse-ci-action@v3
         with:
           urls: https://blockgate.vercel.app/
- 
+      - name: javascript-actions
+        uses: actions/javascript-action@main
+                    
   
