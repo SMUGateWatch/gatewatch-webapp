@@ -13,6 +13,6 @@
 </p>
 <p align="center">
 <a aria-label="Actions">
-    <img src="https://github.com/jbryan11/agcs-client/workflows/Master%20Workflow/badge.svg">
+    <img src="https://github.com/jbryan11/agcs-client/workflows/agcs/badge.svg?branch=main">
   </a>
 </p>
