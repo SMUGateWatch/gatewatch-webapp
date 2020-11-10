@@ -1,0 +1,49 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the main branch
+on:
+  push:
+    branches:
+      - main
+        - dev
+          - master
+  pull_request:
+    branches: [ main ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+# Nodejs Environment Actions
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.1.2
+        with:
+    
+          always-auth: npmrc
+          # Version Spec of the version to use.  Examples: 12.x, 10.15.1, >=10.15.0
+          node-version: 12.x
+
+
+      # Installing Dependencies
+      - name: Install Dependencies
+        run: npm install
+        
+      - name: Lighthouse CI Action
+  # You may pin to the exact commit or the version.
+  # uses: treosh/lighthouse-ci-action@3f01a66925eae1613cb01504ae14ddb29b76cf0d
+        uses: treosh/lighthouse-ci-action@v3
+        with:
+          urls: https://blockgate.vercel.app/
+ 
+  
