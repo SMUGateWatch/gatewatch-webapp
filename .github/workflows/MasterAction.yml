@@ -6,10 +6,8 @@ name: Master Workflow
 # events but only for the main branch
 on:
   push:
-    branches:
-      - main
-        - dev
-          - master
+    branches: [ main ]
+      
   pull_request:
     branches: [ main ]
 
