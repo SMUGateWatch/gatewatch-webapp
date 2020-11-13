@@ -7,15 +7,24 @@ import Modal from "react-bootstrap/Modal";
  * TODO: Map all of the current users
  */
 
-
-export default function ManageForm() {
-
-  
+export default function ManageForm({ userList }) {
   var [show, setShow] = useState(false);
- 
+  var [toDelete, setToDelete] = useState();
+  var [showAlert, setShowAlert] = useState({
+    message: "",
+  });
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  const handleConfirmDelete = () => {}
+  const handleConfirmDelete = () => {
+    fetch(`/api/delete?isUser=true`, {
+      method: "DELETE",
+      body: JSON.stringify({
+        userId: toDelete,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => setShowAlert({ message: data.message }));
+  };
   return (
     <React.Fragment>
       <Form className="p-3">
@@ -38,24 +47,30 @@ export default function ManageForm() {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>1</td>
-                <td>pkbr199</td>
-                <td>John Bryan</td>
-                <td>Delda</td>
-                <td>Administrator</td>
-                <td>
-                
-                  <Button
-                    
-                    className="mx-1"
-                    variant="danger"
-                    onClick={handleShow}
-                  >
-                    Delete
-                  </Button>
-                </td>
-              </tr>
+              {userList.map((user, index) => (
+                <React.Fragment>
+                  <tr key={index}>
+                    <td>{user.id}</td>
+                    <td>{user.schoolId}</td>
+                    <td>{user.firstName}</td>
+                    <td>{user.lastName}</td>
+                    <td>{user.roles}</td>
+                    <td>
+                      <Button
+                        className="mx-1"
+                        variant="danger"
+                        value={user.schoolId}
+                        onClick={(e) => {
+                          setToDelete(e.currentTarget.value);
+                          handleShow();
+                        }}
+                      >
+                        Delete
+                      </Button>
+                    </td>
+                  </tr>
+                </React.Fragment>
+              ))}
             </tbody>
           </Table>
         </Form.Row>

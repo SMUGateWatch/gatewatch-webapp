@@ -7,7 +7,13 @@ import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
 import RegisterForm from "../../components/permission/registerForm";
 import ManageForm from "../../components/permission/manageForm";
+import useSWR from 'swr'
+const fetcher = (url) => fetch(url).then(res=> res.json())
 export default function Permissions() {
+  const {data:users , error} = useSWR(`/api/permission`,fetcher)
+
+  if (!users) return <h1>Loading...</h1>
+  if (error) console.log(error.message)
   return (
     <Layout fluid>
       <Container>
@@ -19,7 +25,7 @@ export default function Permissions() {
           <Col>
             <Tabs className="mt-4" defaultActiveKey="manage-permission">
               <Tab eventKey="manage-permission" title="Manage">
-                <ManageForm />
+                <ManageForm userList={users} />
               </Tab>
               <Tab eventKey="create-permission" title="Create">
                 <Container>
