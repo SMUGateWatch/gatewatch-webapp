@@ -1,23 +1,18 @@
-import useSWR from "swr";
-const fetcher = async (url) => {
-  const res = await fetch(url, {
-    method: "POST",
-    body: JSON.stringify({
-      id: "29612150",
-      msg: "Hi there!",
-    }),
-  });
-  const data = await res.json();
+import React from 'react'
+import { signIn, signOut, useSession } from 'next-auth/client'
 
-  if (res.status !== 200) {
-    throw new Error(data.message);
-  }
-  return data;
-};
+export default function Page() {
+  const [ session, loading ] = useSession()
 
-export default function App() {
-  const { data, error } = useSWR(`/api/user/login`, fetcher);
-  if (error) return <div>{error.message}</div>;
-  if (!data) return <div>Loading...</div>;
-  return <div>{data.message}</div>;
+  return <>
+    {!session && <>
+      Not signed in <br/>
+      <button onClick={signIn}>Sign in</button>
+    </>}
+    {session && <>
+      Signed in as {session.user.name} <br/>
+      Signed in as {session} <br/>
+      <button onClick={signOut}>Sign out</button>
+    </>}
+  </>
 }
