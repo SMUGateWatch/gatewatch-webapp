@@ -1,4 +1,4 @@
-import "../styles/global.sass";
+
 import PropTypes from "prop-types";
 import "bootstrap/dist/css/bootstrap.min.css";
 import React from "react";

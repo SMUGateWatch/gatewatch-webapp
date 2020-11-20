@@ -10,8 +10,7 @@ export default function Page() {
       <button onClick={signIn}>Sign in</button>
     </>}
     {session && <>
-      Signed in as {session.user.name} <br/>
-      Signed in as {session} <br/>
+      {session.user.name}
       <button onClick={signOut}>Sign out</button>
     </>}
   </>
