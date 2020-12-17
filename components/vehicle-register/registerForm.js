@@ -5,30 +5,29 @@ import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import { offices } from "../../lib/offices";
 import { schools } from "../../lib/schools";
-
+import { useRouter } from "next/router";
 /**
  * ! BUG : Field selection doesnt change after events
  * TODO: Change how the selection field interact via events
  * TODO: Make a state that will contain the values for the selections and will change the values after events
- * 
+ *
  */
 
 const checkEmptyField = (obj) => {
-  var EmptyField = 0;
+  var numberEmpty = 0;
+
   Object.keys(obj).map((key) => {
-    if (obj[key] === null || obj[key] === "") EmptyField = EmptyField + 1;
+    if (obj[key] === null || obj[key] === "") {
+      numberEmpty += 1;
+    }
   });
-  return EmptyField
+  return numberEmpty;
 };
 
 export default function StudentForm() {
+  const route = useRouter()
   var [testApi, setTestApi] = useState("Test");
-  var [schoolSelection, setSelection1] = useState();
-  var [courseSelection, setSelection2] = useState();
-  var [selectedSchool, setSelectedSchool] = useState("0");
-  var [classType, setClassType] = useState({
-    name: "none",
-  });
+ 
   var [registerForm, setRegisterForm] = useState({
     firstName: "",
     lastName: "",
@@ -38,118 +37,31 @@ export default function StudentForm() {
     vehicleName: "",
     plateNumber: "",
     licenseNumber: "",
+    UID: "",
   });
-  
+
   // TO REGISTER
-  const postFetch = () => {
-    fetch(`/api/vehicles/register`, {
+  const postFetch = async (registerForm) => {
+    const res = await fetch(`/api/vehicles/register?UID=${registerForm.UID}`, {
       method: "POST",
-      body: JSON.stringify({ ...registerForm }),
-    })
-      .then((res) => res.json())
-      .then((data) => setTestApi(data.message));
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ ...registerForm, dateRegistered: new Date() }),
+    });
+    const dataParsed = await res.json();
+    setTestApi(`MESSAGE : : ${dataParsed.message}`);
+    if(dataParsed.id)  route.push("/vehicle-register/register")
   };
+
   const handleRegister = () => {
-    const EmptyField = checkEmptyField(registerForm);
-    if (EmptyField == 0) postFetch();
-    if (EmptyField > 0) setTestApi("empty Field detected");
+     const numberEmpty = checkEmptyField(registerForm);
+    
+      if(numberEmpty == 0) postFetch(registerForm);
+    if(numberEmpty > 0)setTestApi(`EMPTY FIELDS:: ${numberEmpty}`)
   };
 
-  const FieldSelection = () => {
-    return (
-      <React.Fragment>
-        <Form.Label>Field / Major</Form.Label>
-        <Form.Control
-          size="sm"
-          as="select"
-          defaultValue="Choose Field / Major..."
-        >
-          <option value="0">Choose Field / Major...</option>
-          {schools[parseInt(selectedSchool)].courses.map((course, idx) => (
-            <option key={idx} value={idx + 1}>
-              {course}
-            </option>
-          ))}
-        </Form.Control>
-      </React.Fragment>
-    );
-  };
-  const SchoolSelection = () => {
-    return (
-      <React.Fragment>
-        <Form.Label>School</Form.Label>
-        <Form.Control
-          size="sm"
-          as="select"
-          defaultValue="Choose School..."
-          onChange={(e) => handleSchool(e.currentTarget.value)}
-        >
-          <option value="0">Choose School...</option>
-          {schools.map((school, index) => (
-            <option key={index} value={school.value}>
-              {school.name}
-            </option>
-          ))}
-        </Form.Control>
-      </React.Fragment>
-    );
-  };
-  const OfficeSelection = () => {
-    return (
-      <React.Fragment>
-        <Form.Label>Office</Form.Label>
-        <Form.Control
-          size="sm"
-          as="select"
-          defaultValue="Choose School..."
-          onChange={(e) => handleSchool(e.currentTarget.value)}
-        >
-          <option value="0">Choose Office...</option>
-          {offices.map((office, index) => (
-            <option key={index} value={office.value}>
-              {office.name}
-            </option>
-          ))}
-        </Form.Control>
-      </React.Fragment>
-    );
-  };
-  const handleSchool = (selected) => {
-    setSelectedSchool(selected);
-    if (selected > 0) {
-      setSelection2(null);
-      setSelection2(
-        <React.Fragment>
-          <Form.Label>Field / Major</Form.Label>
-          <Form.Control
-            size="sm"
-            as="select"
-            defaultValue="Choose Field / Major..."
-          >
-            <option value="" disabled selected>Choose Field / Major...</option>
-            {schools[parseInt(selectedSchool)].courses.map((course, idx) => (
-              <option key={idx} value={idx + 1}>
-                {course}
-              </option>
-            ))}
-          </Form.Control>
-        </React.Fragment>
-      );
-    }
-    if (selected == "0") setSelection2(null);
-  };
-
-  const handleClassType = (selected) => {
-      setRegisterForm({
-          classType: selected
-      })
-    if (selected == "1") setSelection1(SchoolSelection);
-    if (selected == "2") setSelection1(OfficeSelection);
-    if (selected == "0") {
-      setSelection1(null);
-      setSelection2(null);
-    }
-  };
   return (
     <React.Fragment>
       <Col>
@@ -162,9 +74,11 @@ export default function StudentForm() {
                 type="text"
                 placeholder="Enter First Name"
                 onChange={(e) =>
-                  setRegisterForm({ firstName: e.currentTarget.value })
+                  setRegisterForm({
+                    ...registerForm,
+                    firstName: e.currentTarget.value,
+                  })
                 }
-                value={registerForm.firstName}
               />
             </Form.Group>
             <Form.Group as={Col} controlId="formGridLastName">
@@ -174,7 +88,10 @@ export default function StudentForm() {
                 type="text"
                 placeholder="Enter Last Name"
                 onChange={(e) =>
-                  setRegisterForm({ lastName: e.currentTarget.value })
+                  setRegisterForm({
+                    ...registerForm,
+                    lastName: e.currentTarget.value,
+                  })
                 }
               />
             </Form.Group>
@@ -187,7 +104,10 @@ export default function StudentForm() {
                 type="text"
                 placeholder="Enter Gender"
                 onChange={(e) =>
-                  setRegisterForm({ gender: e.currentTarget.value })
+                  setRegisterForm({
+                    ...registerForm,
+                    Gender: e.currentTarget.value,
+                  })
                 }
               />
             </Form.Group>
@@ -198,28 +118,77 @@ export default function StudentForm() {
                 type="text"
                 placeholder="Enter School ID"
                 onChange={(e) =>
-                  setRegisterForm({ schoolId: e.currentTarget.value })
+                  setRegisterForm({
+                    ...registerForm,
+                    schoolId: e.currentTarget.value,
+                  })
                 }
               />
             </Form.Group>
           </Form.Row>
           <Form.Row>
-            <Form.Group as={Col} controlId="formClassType">
+          <Form.Group as={Col} controlId="formGridSchoolId">
               <Form.Label>Class Type</Form.Label>
               <Form.Control
                 size="sm"
-                as="select"
-                defaultValue="Choose Type..."
-                onChange={(e) => handleClassType(e.currentTarget.value)}
-              >
-                <option value="0">Choose Type...</option>
-                <option value="1">Student</option>
-                <option value="2">Employee</option>
-              </Form.Control>
+                type="text"
+                placeholder="Enter Class Type"
+                onChange={(e) =>
+                  setRegisterForm({
+                    ...registerForm,
+                   classType: e.currentTarget.value,
+                  })
+                }
+              />
+            </Form.Group>
+            <Form.Group as={Col} controlId="formGridSchoolId">
+              <Form.Label>UID</Form.Label>
+              <Form.Control
+                size="sm"
+                type="text"
+                placeholder="Enter UID"
+                onChange={(e) =>
+                  setRegisterForm({
+                    ...registerForm,
+                   UID: e.currentTarget.value,
+                  })
+                }
+              />
             </Form.Group>
           </Form.Row>
-          {schoolSelection}
-          {courseSelection}
+          <Form.Row>
+          <Form.Group as={Col} controlId="formGridSchoolId">
+              <Form.Label>School / Office</Form.Label>
+              <Form.Control
+                size="sm"
+                type="text"
+                placeholder="Enter School / Office"
+                onChange={(e) =>
+                  setRegisterForm({
+                    ...registerForm,
+                   schoolOffice: e.currentTarget.value,
+                  })
+                }
+              />
+            </Form.Group>
+          </Form.Row>
+          <Form.Row>
+          <Form.Group as={Col} controlId="formGridSchoolId">
+              <Form.Label>Course / Job</Form.Label>
+              <Form.Control
+                size="sm"
+                type="text"
+                placeholder="Enter Course / Job"
+                onChange={(e) =>
+                  setRegisterForm({
+                    ...registerForm,
+                   courseJob: e.currentTarget.value,
+                  })
+                }
+              />
+            </Form.Group>
+          </Form.Row>
+         
         </Form>
       </Col>
       <Col>
@@ -232,7 +201,10 @@ export default function StudentForm() {
                 type="text"
                 placeholder="Enter Vehicle Name"
                 onChange={(e) =>
-                  setRegisterForm({ vehicleName: e.currentTarget.value })
+                  setRegisterForm({
+                    ...registerForm,
+                    vehicleName: e.currentTarget.value,
+                  })
                 }
               />
             </Form.Group>
@@ -245,7 +217,10 @@ export default function StudentForm() {
                 type="text"
                 placeholder="Enter Plate Number"
                 onChange={(e) =>
-                  setRegisterForm({ plateNumber: e.currentTarget.value })
+                  setRegisterForm({
+                    ...registerForm,
+                    plateNumber: e.currentTarget.value,
+                  })
                 }
               />
             </Form.Group>
@@ -256,7 +231,10 @@ export default function StudentForm() {
                 type="text"
                 placeholder="Enter License Number"
                 onChange={(e) =>
-                  setRegisterForm({ licenseNumber: e.currentTarget.value })
+                  setRegisterForm({
+                    ...registerForm,
+                    licenseNumber: e.currentTarget.value,
+                  })
                 }
               />
             </Form.Group>
