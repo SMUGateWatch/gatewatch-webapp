@@ -41,7 +41,7 @@ export default function StudentForm() {
 
   // TO REGISTER
   const postFetch = async (registerForm) => {
-    const res = await fetch(`/api/vehicles/register?UID=${registerForm.UID}`, {
+    const res = await fetch(`/api/vehicles/register`, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -51,6 +51,7 @@ export default function StudentForm() {
     });
     const dataParsed = await res.json();
     setTestApi(`MESSAGE : : ${dataParsed.message}`);
+    if (dataParsed.message == "Acknowledged") route.push("register")
    
   };
 
