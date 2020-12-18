@@ -3,8 +3,7 @@ import React, { useState } from "react";
 import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
-import { offices } from "../../lib/offices";
-import { schools } from "../../lib/schools";
+
 import { useRouter } from "next/router";
 /**
  * ! BUG : Field selection doesnt change after events
