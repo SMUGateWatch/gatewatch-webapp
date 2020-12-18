@@ -51,7 +51,7 @@ export default function StudentForm() {
     });
     const dataParsed = await res.json();
     setTestApi(`MESSAGE : : ${dataParsed.message}`);
-    if(dataParsed.id)  route.push("/vehicle-register/register")
+   
   };
 
   const handleRegister = () => {

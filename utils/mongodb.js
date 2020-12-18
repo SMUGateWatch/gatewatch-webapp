@@ -1,6 +1,6 @@
 import { MongoClient } from 'mongodb'
 
-const { MONGODB_URI, MONGODB_DB } = process.env
+const { MONGO_URL, MONGODB_DB } = process.env
 
 if (!MONGODB_URI) {
   throw new Error(
